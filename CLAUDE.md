@@ -21,7 +21,7 @@ src/
 ├── puzzle/              # Match-3 system (independent)
 │   ├── board.rs         # PuzzleBoard resource
 │   ├── input.rs         # Tile selection/swap
-│   ├── matching.rs      # Match detection
+│   ├── match_detector.rs # Match detection
 │   └── cascade.rs       # Gravity & chain reactions
 ├── battle/              # Auto-chess system (independent)
 │   ├── hex_grid.rs      # HexPosition, BattleGrid
@@ -91,17 +91,17 @@ Improve code quality while keeping tests green.
 src/puzzle/
 ├── mod.rs
 ├── board.rs
-├── matching.rs
+├── match_detector.rs
 └── tests/           # Test modules
     ├── mod.rs
     ├── board_tests.rs
-    └── matching_tests.rs
+    └── match_detector_tests.rs
 ```
 
 Or inline tests in each module:
 
 ```rust
-// src/puzzle/matching.rs
+// src/puzzle/match_detector.rs
 pub fn detect_matches(...) { ... }
 
 #[cfg(test)]
@@ -164,8 +164,8 @@ Always use `.chain()` for dependent systems:
 // Define event
 #[derive(Event)]
 struct UnitSummonEvent {
-    unit_type: UnitType,
-    star_rank: StarRank,
+    unit_type: TileType,
+    star_rank: u8,
 }
 
 // Register observer
@@ -285,7 +285,7 @@ tiles.get(entity); // Entity doesn't exist yet!
 commands.entity(parent).despawn(); // Children become orphans!
 
 // ❌ Direct module coupling
-// In puzzle/matching.rs:
+// In puzzle/match_detector.rs:
 use crate::battle::Unit; // ❌ Use bridge events instead
 ```
 
