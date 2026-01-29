@@ -73,13 +73,16 @@ fn handle_obstacle_spawn(
         return;
     }
 
-    board.set_obstacle(x, y, Some(event.obstacle_type));
-
     match event.obstacle_type {
-        ObstacleType::Ice => spawn_ice(&mut commands, &board, x, y),
+        ObstacleType::Ice => {
+            board.set_obstacle(x, y, Some(event.obstacle_type));
+            spawn_ice(&mut commands, &board, x, y);
+        }
         ObstacleType::Bomb => {
             // Bomb attaches to tile as child entity
+            // Only set obstacle if tile exists to prevent board state inconsistency
             if let Some(tile_entity) = board.get(x, y) {
+                board.set_obstacle(x, y, Some(event.obstacle_type));
                 spawn_bomb(&mut commands, tile_entity, event.countdown.unwrap_or(3), x, y);
             }
         }
@@ -207,12 +210,12 @@ fn handle_bomb_defuse(
     trigger: Trigger<BombDefuseEvent>,
     mut commands: Commands,
     board: Res<PuzzleBoard>,
-    bombs: Query<(Entity, &GridPosition), With<Obstacle>>,
+    obstacles: Query<(Entity, &GridPosition), With<Obstacle>>,
 ) {
     let (x, y) = trigger.event().position;
 
     // Find and remove the bomb at this position
-    for (entity, pos) in bombs.iter() {
+    for (entity, pos) in obstacles.iter() {
         if pos.x == x && pos.y == y {
             // Spawn defuse effect at world position
             let world_pos = board.grid_to_world(x, y);
@@ -227,8 +230,8 @@ fn handle_bomb_defuse(
                 Visibility::default(),
             ));
 
-            // Despawn the bomb (child will be removed with parent tile anyway,
-            // but we explicitly remove here for the case where we want to defuse without removing tile)
+            // Spawn defuse effect. The bomb entity will be despawned with the parent tile
+            // via despawn_recursive, but we trigger the visual effect here.
             commands.entity(entity).despawn_recursive();
             break;
         }

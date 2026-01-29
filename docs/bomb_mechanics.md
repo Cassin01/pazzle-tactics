@@ -44,11 +44,20 @@ if current_wave >= 5 && rng.gen::<f32>() < 0.15 {
 ## 2. カウントダウン
 
 ### システム
-`bomb_countdown_system` がターン毎にカウントを1減少させる。
+`bomb_countdown_system` が一定時間ごとにカウントを1減少させる。
+カウントダウンは `BOMB_COUNTDOWN_INTERVAL` で定義された間隔（デフォルト1.5秒）で進行する。
 
 ### 実装
 ```rust
 // src/battle/wave.rs - bomb_countdown_system()
+pub const BOMB_COUNTDOWN_INTERVAL: f32 = 1.5;
+
+countdown_timer.timer += time.delta_secs();
+if countdown_timer.timer < BOMB_COUNTDOWN_INTERVAL {
+    return;
+}
+countdown_timer.timer = 0.0;
+
 if obstacle.is_bomb() {
     if let Some(ref mut countdown) = obstacle.countdown {
         if *countdown > 0 {
@@ -67,9 +76,10 @@ if obstacle.is_bomb() {
 
 | パラメータ | 値 |
 |-----------|-----|
-| フォントサイズ | 32.0 |
-| 文字色 | RGB(1.0, 0.3, 0.3) - 赤 |
+| フォントサイズ | 28.0 |
+| 文字色 | WHITE（白） |
 | Z位置 | 0.1（爆弾本体より前面）|
+| カウントダウン間隔 | 1.5秒 |
 
 ---
 
@@ -159,22 +169,22 @@ pub fn handle_bomb_damage(
 ```rust
 // src/puzzle/obstacle.rs - spawn_bomb()
 Sprite {
-    color: Color::srgb(0.2, 0.2, 0.2),  // 暗灰色
-    custom_size: Some(Vec2::splat(TILE_SIZE * 0.8)),
+    color: Color::srgb(0.9, 0.4, 0.1),  // オレンジ（視認性向上のため）
+    custom_size: Some(Vec2::splat(TILE_SIZE * 0.6)),
 }
 ```
 
 | パラメータ | 値 |
 |-----------|-----|
-| 色 | RGB(0.2, 0.2, 0.2) - 暗灰色 |
-| サイズ | TILE_SIZE × 0.8 |
+| 色 | RGB(0.9, 0.4, 0.1) - オレンジ |
+| サイズ | TILE_SIZE × 0.6 |
 | Z位置 | 0.5 |
 
 ### カウントダウン数字
 | パラメータ | 値 |
 |-----------|-----|
-| フォントサイズ | 32.0 |
-| 色 | RGB(1.0, 0.3, 0.3) - 赤 |
+| フォントサイズ | 28.0 |
+| 色 | WHITE（白） |
 | 位置 | 爆弾中央 (0, 0, 0.1) |
 
 ### 爆発エフェクト
