@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use crate::puzzle::TileType;
+// TileType is now imported via prelude
 use super::{Unit, UnitType, UnitStats, Team};
 use std::collections::HashMap;
 

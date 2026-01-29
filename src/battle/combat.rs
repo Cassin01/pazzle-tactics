@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use crate::puzzle::{TileType, ObstacleType};
+// TileType, ObstacleType are now imported via prelude
 use crate::bridge::ObstacleSpawnEvent;
 use crate::audio::AttackSoundEvent;
 use super::{Unit, UnitStats, UnitType, HexPosition, BattleGrid, Team, Target, AttackCooldown, WaveManager, RageBuff, SnipeBuff, StealthBuff, MeteorAbility, DamagePopupEvent};

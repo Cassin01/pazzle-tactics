@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use crate::puzzle::TileType;
+// TileType is now imported via prelude
 
 const HEALTH_BAR_WIDTH: f32 = 30.0;
 const HEALTH_BAR_HEIGHT: f32 = 4.0;

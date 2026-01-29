@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use crate::puzzle::{TileType, PuzzleBoard, GridPosition, Obstacle};
+// TileType, PuzzleBoard, GridPosition, Obstacle are now imported via prelude
 use super::{
     Unit, UnitStats, UnitType, StarRank, Team, BattleGrid, HexPosition,
     Target, AttackCooldown,
